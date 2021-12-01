@@ -16,9 +16,13 @@ def findBall():
 	while regionBall == -1:
 		spin_left(TIME_INCREMENT)
 
+def findGoal():
+	regionGoal = getRegionGoal()
+	while regionGoal == -1:
+		spin_left(TIME_INCREMENT)
 
 
-def main():
+def centerBall():
 	while True:
 		regionBall = getRegion()
 
@@ -27,6 +31,7 @@ def main():
 
 		elif regionBall == 1:
 			run(TIME_INCREMENT)
+			break
 
 
 		elif regionBall == 2:
@@ -35,6 +40,31 @@ def main():
 
 		elif regionBall == 0:
 			left(TIME_INCREMENT)
+
+
+def centerGoal():
+	while True:
+		regionGoal = getRegionGoal()
+
+		if regionGoal == -1:
+			findGoal()
+
+		elif regionGoal == 1:
+			run(TIME_INCREMENT)
+			break
+
+
+		elif regionGoal == 2:
+			right(TIME_INCREMENT)
+
+
+		elif regionGoal == 0:
+			left(TIME_INCREMENT)
+
+def main():
+	while True:
+		centerBall()
+		centerGoal()
 
 
 
