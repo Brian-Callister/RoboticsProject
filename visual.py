@@ -36,7 +36,7 @@ def inspect_image():
     dir = "pictures/"
     current = dir
     directory = os.listdir(current)
-
+    imagesWithCircles = 0
     for im in directory:
         if im == "difficult":
             continue
@@ -70,12 +70,13 @@ def inspect_image():
         gray = cv2.blur(gray, (3, 3))
 
         # show image and wait for keypress
-        cv2.imshow("Image", gray)
-        cv2.waitKey(0)
+        # cv2.imshow("Image", gray)
+        # cv2.waitKey(0)
 
         # circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 1000, param1=30, param2=65, minRadius=0, maxRadius=0) todo from Shubham Chopra
         # detect circles in the image - doesnt detect tiny ball in ball5.jfif (should be smaller than camera feed finds)
-        circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 2.5, 1000, param1=350, param2=100, minRadius=0, maxRadius=0)
+        # circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 2.2, 1000, param1=60, param2=80, minRadius=0, maxRadius=200)
+        circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 2.2, 1000, param1=60, param2=80, minRadius=0, maxRadius=200)
         # ensure at least some circles were found
         if circles is not None:
             # convert the (x, y) coordinates and radius of the circles to integers
@@ -86,6 +87,9 @@ def inspect_image():
                 # corresponding to the center of the circle
                 cv2.circle(output, (x, y), r, (0, 255, 0), 4)
                 cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
+                cv2.line(output, (int(widthOneSeg), 1), (int(widthOneSeg), int(height)), (0, 0, 255), 2)
+                cv2.line(output, (int(width - widthOneSeg), 1), (int(width - widthOneSeg), int(height)), (0, 0, 255), 2)
+
                 # todo: do math to place ball in one of the 3 x 3 segments and set ballSegment to code number
                 if x < widthOneSeg:
                     ballSegment = 0
@@ -94,15 +98,17 @@ def inspect_image():
                 elif x >= width - widthOneSeg:
                     ballSegment = 2
             # show the output image
-            cv2.imshow("output", np.hstack([image, output]))
-            cv2.waitKey(0)
+            print("showing image")
+            # cv2.imshow("Image", output)
+            # cv2.waitKey(0)
             print("Circle Found")
+            imagesWithCircles += 1
             # return ballSegment
         else:
             print("found no circles")
             ballSegment = -1
             # return ballSegment
-
+        print(imagesWithCircles)
 
 def is_ball_visible():
     # Check if ball is within current view
