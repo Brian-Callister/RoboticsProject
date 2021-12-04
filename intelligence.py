@@ -23,43 +23,43 @@ def findGoal():
 
 
 def centerBall():
-	while True:
-		regionBall = getRegion()
+	
+	regionBall = getRegion()
 
-		if regionBall == -1:
-			findBall()
+	if regionBall == -1:
+		findBall()
 
-		elif regionBall == 1:
-			run(TIME_INCREMENT)
-			break
-
-
-		elif regionBall == 2:
-			right(TIME_INCREMENT)
+	elif regionBall == 1:
+		run(TIME_INCREMENT)
+		break
 
 
-		elif regionBall == 0:
-			left(TIME_INCREMENT)
+	elif regionBall == 2:
+		right(TIME_INCREMENT)
+
+
+	elif regionBall == 0:
+		left(TIME_INCREMENT)
 
 
 def centerGoal():
-	while True:
-		regionGoal = getRegionGoal()
+	
+	regionGoal = getRegionGoal()
 
-		if regionGoal == -1:
-			findGoal()
+	if regionGoal == -1:
+		findGoal()
 
-		elif regionGoal == 1:
-			run(TIME_INCREMENT)
-			break
-
-
-		elif regionGoal == 2:
-			right(TIME_INCREMENT)
+	elif regionGoal == 1:
+		run(TIME_INCREMENT)
+		break
 
 
-		elif regionGoal == 0:
-			left(TIME_INCREMENT)
+	elif regionGoal == 2:
+		right(TIME_INCREMENT)
+
+
+	elif regionGoal == 0:
+		left(TIME_INCREMENT)
 
 def main():
 	while True:
@@ -69,4 +69,3 @@ def main():
 
 
 main()
-
