@@ -7,6 +7,8 @@
 	# spin_right(delayTime)
 	# brake(delayTime)
 
+from movement import run, back, left, right, spin_left, spin_right, brake
+
 
 TIME_INCREMENT = 0.2 # seconds
 
