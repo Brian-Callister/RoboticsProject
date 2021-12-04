@@ -20,7 +20,7 @@ detecting circles - https://www.pyimagesearch.com/2014/07/21/detecting-circles-i
 '''
 
 
-def inspect_image(img):
+def find_ball(img):
     ballSegment = None
 
     # -d configure which camera device to use
@@ -28,6 +28,7 @@ def inspect_image(img):
     # -S visibility range 1 - 10 if parameter not set or set to 0 foto will be black
     # if path not specified /home/pi is the default
     # EXAMPLE: "fswebcam -d /dev/video0 --no-banner -r 320x240 -S 10 /home/pi/foto.jpg
+
     dirFoto = "/home/pi/"
     imageName = "camView.jpg"
     commandToTakeFoto = "fswebcam -d /dev/video0 --no-banner -r 320x240 -S 10 " + dirFoto + imageName
@@ -110,5 +111,6 @@ def inspect_image(img):
 
 # load in image here
 img = ""
+
 # can get an image as input to our function TESTING PURPOSES
-inspect_image(img)
+find_ball(img)
