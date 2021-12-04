@@ -7,6 +7,8 @@
 	# spin_right(delayTime)
 	# brake(delayTime)
 
+from movement import run, back, left, right, spin_left, spin_right, brake
+from random import randint
 
 TIME_INCREMENT = 0.2 # seconds
 
@@ -23,50 +25,46 @@ def findGoal():
 
 
 def centerBall():
-	while True:
-		regionBall = getRegion()
+	
+	regionBall = randint(-1, 2)
 
-		if regionBall == -1:
-			findBall()
+	if regionBall == -1:
+		findBall()
 
-		elif regionBall == 1:
-			run(TIME_INCREMENT)
-			break
-
-
-		elif regionBall == 2:
-			right(TIME_INCREMENT)
+	elif regionBall == 1:
+		run(TIME_INCREMENT)
+		break
 
 
-		elif regionBall == 0:
-			left(TIME_INCREMENT)
+	elif regionBall == 2:
+		right(TIME_INCREMENT)
+
+
+	elif regionBall == 0:
+		left(TIME_INCREMENT)
 
 
 def centerGoal():
-	while True:
-		regionGoal = getRegionGoal()
+	
+	regionGoal = randint(0, 2)
 
-		if regionGoal == -1:
-			findGoal()
+	if regionGoal == -1:
+		findGoal()
 
-		elif regionGoal == 1:
-			run(TIME_INCREMENT)
-			break
-
-
-		elif regionGoal == 2:
-			right(TIME_INCREMENT)
+	elif regionGoal == 1:
+		run(TIME_INCREMENT)
+		break
 
 
-		elif regionGoal == 0:
-			left(TIME_INCREMENT)
+	elif regionGoal == 2:
+		right(TIME_INCREMENT)
+
+
+	elif regionGoal == 0:
+		left(TIME_INCREMENT)
 
 def main():
-	while True:
-		centerBall()
-		centerGoal()
+	centerBall()
+	# centerGoal()
 
-
-
-main()
 
