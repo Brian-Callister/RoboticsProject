@@ -110,18 +110,7 @@ time.sleep(2)
 #the except statement catches the exception information and processes it.
 #The robot car advance 1s，back 1s，turn left 2s，turn right 2s，turn left  in place 3s
 #turn right  in place 3s，stop 1s。
-try:
-    motor_init()
-    while True:
-        run(1)
-	back(1)
-	left(2)
-	right(2)
-	spin_left(3)
-	spin_right(3)
-	brake(1)
-except KeyboardInterrupt:
-    pass
+
 pwm_ENA.stop()
 pwm_ENB.stop()
 GPIO.cleanup() 

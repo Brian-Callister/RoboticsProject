@@ -8,7 +8,7 @@
 	# brake(delayTime)
 
 from movement import run, back, left, right, spin_left, spin_right, brake
-
+from random import randint
 
 TIME_INCREMENT = 0.2 # seconds
 
@@ -26,7 +26,7 @@ def findGoal():
 
 def centerBall():
 	
-	regionBall = getRegion()
+	regionBall = randint(-1, 2)
 
 	if regionBall == -1:
 		findBall()
@@ -46,7 +46,7 @@ def centerBall():
 
 def centerGoal():
 	
-	regionGoal = getRegionGoal()
+	regionGoal = randint(0, 2)
 
 	if regionGoal == -1:
 		findGoal()
@@ -64,10 +64,7 @@ def centerGoal():
 		left(TIME_INCREMENT)
 
 def main():
-	while True:
-		centerBall()
-		centerGoal()
+	centerBall()
+	# centerGoal()
 
 
-
-main()
