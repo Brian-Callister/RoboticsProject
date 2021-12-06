@@ -77,7 +77,7 @@ def find_ball(img):
     # circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 2.2, 1000, param1=60, param2=80, minRadius=0, maxRadius=200)
     circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 2.2, 1000, param1=60, param2=80, minRadius=0, maxRadius=200)
     # ensure at least some circles were found
-    if circles is not None:
+    if circles is not None and circles[0] is not None and circles[0][0] is not None:
         # convert the (x, y) coordinates and radius of the circles to integers
         circles = np.round(circles[0, :]).astype("int")
         # loop over the (x, y) coordinates and radius of the circles
@@ -110,7 +110,8 @@ def find_ball(img):
     # print(imagesWithCircles)
 
 # load in image here
-img = ""
+# img = ""
 
 # can get an image as input to our function TESTING PURPOSES
-find_ball(img)
+# find_ball(img)
+

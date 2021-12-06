@@ -1,6 +1,9 @@
 #-*- coding:UTF-8 -*-
 import RPi.GPIO as GPIO
 import time
+from random import randint
+import os
+import visual
 
 #Definition of  motor pin 
 IN1 = 20
@@ -9,6 +12,8 @@ IN3 = 19
 IN4 = 26
 ENA = 16
 ENB = 13
+
+TIME_INCREMENT = 0.5 # seconds
 
 #Set the GPIO port to BCM encoding mode
 GPIO.setmode(GPIO.BCM)
@@ -39,8 +44,8 @@ def run(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.HIGH)
     GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(50)
-    pwm_ENB.ChangeDutyCycle(50)
+    pwm_ENA.ChangeDutyCycle(25)
+    pwm_ENB.ChangeDutyCycle(25)
     time.sleep(delaytime)
 
 #back
@@ -49,8 +54,8 @@ def back(delaytime):
     GPIO.output(IN2, GPIO.HIGH)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.HIGH)
-    pwm_ENA.ChangeDutyCycle(50)
-    pwm_ENB.ChangeDutyCycle(50)
+    pwm_ENA.ChangeDutyCycle(25)
+    pwm_ENB.ChangeDutyCycle(25)
     time.sleep(delaytime)
 
 #turn left
@@ -59,8 +64,8 @@ def left(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.HIGH)
     GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(50)
-    pwm_ENB.ChangeDutyCycle(50)
+    pwm_ENA.ChangeDutyCycle(25)
+    pwm_ENB.ChangeDutyCycle(25)
     time.sleep(delaytime)
 
 #turn right
@@ -69,8 +74,8 @@ def right(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(50)
-    pwm_ENB.ChangeDutyCycle(50)
+    pwm_ENA.ChangeDutyCycle(25)
+    pwm_ENB.ChangeDutyCycle(25)
     time.sleep(delaytime)
 
 #turn left in place
@@ -79,8 +84,8 @@ def spin_left(delaytime):
     GPIO.output(IN2, GPIO.HIGH)
     GPIO.output(IN3, GPIO.HIGH)
     GPIO.output(IN4, GPIO.LOW)
-    pwm_ENA.ChangeDutyCycle(50)
-    pwm_ENB.ChangeDutyCycle(50)
+    pwm_ENA.ChangeDutyCycle(25)
+    pwm_ENB.ChangeDutyCycle(25)
     time.sleep(delaytime)
 
 #turn right in place
@@ -89,94 +94,83 @@ def spin_right(delaytime):
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.HIGH)
-    pwm_ENA.ChangeDutyCycle(50)
-    pwm_ENB.ChangeDutyCycle(50)
+    pwm_ENA.ChangeDutyCycle(25)
+    pwm_ENB.ChangeDutyCycle(25)
     time.sleep(delaytime)
 
 #brake
-def brake(delaytime):
+def brake():
     GPIO.output(IN1, GPIO.LOW)
     GPIO.output(IN2, GPIO.LOW)
     GPIO.output(IN3, GPIO.LOW)
     GPIO.output(IN4, GPIO.LOW)
     pwm_ENA.ChangeDutyCycle(50)
     pwm_ENB.ChangeDutyCycle(50)
-    time.sleep(delaytime)
-
-#Delay 2s	
-time.sleep(2)
-
-#The try/except statement is used to detect errors in the try block.
-#the except statement catches the exception information and processes it.
-#The robot car advance 1s，back 1s，turn left 2s，turn right 2s，turn left  in place 3s
-#turn right  in place 3s，stop 1s。
-from random import randint
-
-TIME_INCREMENT = 0.2 # seconds
 
 
 def findBall():
-	regionBall = randint(0,2)
-	while regionBall == -1:
-		spin_left(TIME_INCREMENT)
+        spin_left(TIME_INCREMENT)
+        brake()
+
 
 def findGoal():
-	regionGoal = getRegionGoal()
-	while regionGoal == -1:
-		spin_left(TIME_INCREMENT)
+        spin_left(TIME_INCREMENT)
+        brake()
 
 
-def centerBall():
-	
-	regionBall = randint(-1, 2)
+def centerBall(regionBall):
 
-	if regionBall == -1:
-		findBall()
+    if regionBall == -1:
+        findBall()
+        print('-1')
 
-	elif regionBall == 1:
-		run(TIME_INCREMENT)
-
-
-	elif regionBall == 2:
-		right(TIME_INCREMENT)
+    elif regionBall == 1:
+        run(TIME_INCREMENT)
 
 
-	elif regionBall == 0:
-		left(TIME_INCREMENT)
+    elif regionBall == 2:
+        right(TIME_INCREMENT)
 
 
-def centerGoal():
-	
-	regionGoal = randint(0, 2)
-
-	if regionGoal == -1:
-		findGoal()
-
-	elif regionGoal == 1:
-		run(TIME_INCREMENT)
+    elif regionBall == 0:
+        left(TIME_INCREMENT)
+    brake()
 
 
-	elif regionGoal == 2:
-		right(TIME_INCREMENT)
+def centerGoal(regionGoal):
+    if regionGoal == -1:
+        findGoal()
+
+    elif regionGoal == 1:
+        run(TIME_INCREMENT)
 
 
-	elif regionGoal == 0:
-		left(TIME_INCREMENT)
+    elif regionGoal == 2:
+        right(TIME_INCREMENT)
 
+
+    elif regionGoal == 0:
+        left(TIME_INCREMENT)
+    brake()
 
 
 def main():
-
-	centerBall()
-	# centerGoal()
+    # Take picture
+    os.system('fswebcam current_view.jpg')
+    # Process picture
+    ball_location = visual.find_ball('/home/pi/Desktop/RoboticsProject/current_view.jpg')
+    print(ball_location)
+    centerBall(ball_location)
+    # centerGoal()
+    
 	
 if __name__ == '__main__':
-	try:
-		motor_init()
-		while True:
-			main()
-	except KeyboardInterrupt:
-	    pass
+    try:
+        motor_init()
+        while True:
+            main()
+    except KeyboardInterrupt:
+        pass
     
 pwm_ENA.stop()
 pwm_ENB.stop()
