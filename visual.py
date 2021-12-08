@@ -12,13 +12,6 @@ maybe a model like this would be okay?
 '''
 # once it finds the ball this will be set with codes 0 - 8 found above
 
-'''
-detecting circles - https://www.pyimagesearch.com/2014/07/21/detecting-circles-images-using-opencv-hough-circles/
-                  - https://www.instructables.com/Detecting-Circles-With-OpenCV-and-Python/
-                            - his code - https://content.instructables.com/ORIG/FYS/C6X1/IKECQ3CY/FYSC6X1IKECQ3CY.py
-            - hough circle Off Doc - https://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html
-            - param 1 and param 2 explained - https://dsp.stackexchange.com/questions/22648/in-opecv-function-hough-circles-how-does-parameter-1-and-2-affect-circle-detecti
-'''
 
 
 def draw_lines(img, houghLines, color=[0, 255, 0], thickness=2):
@@ -65,14 +58,6 @@ def find_goal(img):
         theta_resolution = np.pi / 180
         threshold = 255
 
-        # show image and wait for keypress
-        # cv2.imshow("Image", gray)
-        # cv2.waitKey(0)
-
-        # circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 1000, param1=30, param2=65, minRadius=0, maxRadius=0) todo from Shubham Chopra
-        # detect circles in the image - doesnt detect tiny ball in ball5.jfif (should be smaller than camera feed finds)
-        # circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 2.2, 1000, param1=60, param2=80, minRadius=0, maxRadius=200)
-        # goal = cv2.HoughLinesP(edges_image, rho=50, theta=(np.pi /180), threshold=45000, lines=None, minLineLength=0, maxLineGap=0)
         goal = cv2.HoughLines(edges_image, rho_resolution , theta_resolution , threshold)
 
         # ensure at least some lines were found
@@ -117,8 +102,6 @@ def find_goal(img):
                     elif midPointVertical >= width - widthOneSeg:
                         ballSegment = 2
                         break
-
-
 
             # show the output image
             print("showing image")
@@ -187,8 +170,6 @@ def find_ball(img):
     # cv2.imshow("Image", gray)
     # cv2.waitKey(0)
 
-    # circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 1000, param1=30, param2=65, minRadius=0, maxRadius=0) todo from Shubham Chopra
-    # detect circles in the image - doesnt detect tiny ball in ball5.jfif (should be smaller than camera feed finds)
     # circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 2.2, 1000, param1=60, param2=80, minRadius=0, maxRadius=200)
     circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 2.2, 1000, param1=60, param2=80, minRadius=0, maxRadius=200)
     # ensure at least some circles were found
@@ -204,7 +185,6 @@ def find_ball(img):
             cv2.line(output, (int(widthOneSeg), 1), (int(widthOneSeg), int(height)), (0, 0, 255), 2)
             cv2.line(output, (int(width - widthOneSeg), 1), (int(width - widthOneSeg), int(height)), (0, 0, 255), 2)
 
-            # todo: do math to place ball in one of the 3 x 3 segments and set ballSegment to code number
             if x < widthOneSeg:
                 ballSegment = 0
             elif x >= widthOneSeg and x < width - widthOneSeg:
@@ -229,5 +209,5 @@ img = ""
 
 # can get an image as input to our function TESTING PURPOSES
 # find_ball(img)
-find_goal(img)
+# find_goal(img)
 
