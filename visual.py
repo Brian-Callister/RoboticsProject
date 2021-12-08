@@ -1,3 +1,4 @@
+import math
 import os
 
 import cv2
@@ -19,6 +20,120 @@ detecting circles - https://www.pyimagesearch.com/2014/07/21/detecting-circles-i
             - param 1 and param 2 explained - https://dsp.stackexchange.com/questions/22648/in-opecv-function-hough-circles-how-does-parameter-1-and-2-affect-circle-detecti
 '''
 
+
+def draw_lines(img, houghLines, color=[0, 255, 0], thickness=2):
+    for line in houghLines:
+        for rho, theta in line:
+            a = np.cos(theta)
+            b = np.sin(theta)
+            x0 = a * rho
+            y0 = b * rho
+            x1 = int(x0 + 1000 * (-b))
+            y1 = int(y0 + 1000 * (a))
+            x2 = int(x0 - 1000 * (-b))
+            y2 = int(y0 - 1000 * (a))
+
+            cv2.line(img, (x1, y1), (x2, y2), color, thickness)
+
+
+def weighted_img(img, initial_img, α=0.8, β=1., λ=0.):
+    return cv2.addWeighted(initial_img, α, img, β, λ)
+
+def find_goal(img):
+
+    dir = "shovelImg/"
+    current = dir
+    directory = os.listdir(current)
+    imagesWithGoal = 0
+    for im in directory:
+
+        image = cv2.imread(current + im)
+
+        width = int(image.shape[1])
+        height = int(image.shape[0])
+        dim = (width, height)
+        print("image width (in pixels): " + str(width))
+        widthOneSeg = width / 3
+
+        output = image.copy()
+
+        gray_image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+        blurred_image = cv2.GaussianBlur(gray_image, (9, 9), 0)
+        edges_image = cv2.Canny(blurred_image, 50, 120)
+
+        rho_resolution = 10
+        theta_resolution = np.pi / 180
+        threshold = 255
+
+        # show image and wait for keypress
+        # cv2.imshow("Image", gray)
+        # cv2.waitKey(0)
+
+        # circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 1000, param1=30, param2=65, minRadius=0, maxRadius=0) todo from Shubham Chopra
+        # detect circles in the image - doesnt detect tiny ball in ball5.jfif (should be smaller than camera feed finds)
+        # circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 2.2, 1000, param1=60, param2=80, minRadius=0, maxRadius=200)
+        # goal = cv2.HoughLinesP(edges_image, rho=50, theta=(np.pi /180), threshold=45000, lines=None, minLineLength=0, maxLineGap=0)
+        goal = cv2.HoughLines(edges_image, rho_resolution , theta_resolution , threshold)
+
+        # ensure at least some lines were found
+        ballSegment = -1
+        if goal is not None:
+
+            for i in range(0, len(goal)):
+                use = False
+                rho = goal[i][0][0]
+                theta = goal[i][0][1]
+                a = math.cos(theta)
+                b = math.sin(theta)
+                x0 = a * rho
+                y0 = b * rho
+                pt1 = (int(x0 + 1000 * (-b)), int(y0 + 1000 * (a)))
+                pt2 = (int(x0 - 1000 * (-b)), int(y0 - 1000 * (a)))
+
+                xx0 = int(x0 + 1000 * (-b))
+                yy0 = int(y0 + 1000 * (a))
+
+                xx1 = int(x0 - 1000 * (-b))
+                yy1 = int(y0 - 1000 * (a))
+                if abs(xx0 - xx1) < 150:
+                    use = True
+                    midPointVertical = (xx0 + xx1) / 2
+                    cv2.line(output, pt1, pt2, (255, 0, 0), 3, cv2.LINE_AA)
+                    cv2.rectangle(output, (int(midPointVertical - 5), int(midPointVertical - 5)), (int(midPointVertical + 5), int(midPointVertical + 5)), (0, 128, 255), -1)
+
+
+                cv2.line(output, (int(widthOneSeg), 1), (int(widthOneSeg), int(height)), (0, 255, 0), 2)
+                cv2.line(output, (int(width - widthOneSeg), 1), (int(width - widthOneSeg), int(height)), (0, 255, 0), 2)
+
+
+                # todo: do math to place ball in one of the 3 x 3 segments and set ballSegment to code number
+                if use:
+                    if midPointVertical < widthOneSeg:
+                        ballSegment = 0
+                        break
+                    elif midPointVertical >= widthOneSeg and midPointVertical < width - widthOneSeg:
+                        ballSegment = 1
+                        break
+                    elif midPointVertical >= width - widthOneSeg:
+                        ballSegment = 2
+                        break
+
+
+
+            # show the output image
+            print("showing image")
+            cv2.imshow("Image", output)
+            cv2.waitKey(0)
+            print("line Found")
+            print(ballSegment)
+            imagesWithGoal += 1
+            # imagesWithCircles += 1
+            return ballSegment
+        else:
+            print("found no lines")
+            ballSegment = -1
+            return ballSegment
+    # print(imagesWithGoal)
 
 def find_ball(img):
     ballSegment = None
@@ -110,8 +225,9 @@ def find_ball(img):
     # print(imagesWithCircles)
 
 # load in image here
-# img = ""
+img = ""
 
 # can get an image as input to our function TESTING PURPOSES
 # find_ball(img)
+find_goal(img)
 
