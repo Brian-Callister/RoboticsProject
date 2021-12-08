@@ -104,11 +104,11 @@ def find_goal(img):
                         break
 
             # show the output image
-            print("showing image")
-            cv2.imshow("Image", output)
-            cv2.waitKey(0)
+            # print("showing image")
+            # cv2.imshow("Image", output)
+            # cv2.waitKey(0)
             print("line Found")
-            print(ballSegment)
+            # print(ballSegment)
             imagesWithGoal += 1
             # imagesWithCircles += 1
             return ballSegment
